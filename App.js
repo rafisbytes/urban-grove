@@ -75,7 +75,6 @@ function HomeScreen({ navigation }) {
 
   function convertToMapLocation(geoLoc) {
     if (geoLoc) {
-      console.log(geoLoc);
       return {
         latitude: geoLoc.coords.latitude,
         longitude: geoLoc.coords.longitude,
@@ -98,16 +97,8 @@ function HomeScreen({ navigation }) {
     })();
   }, []);
 
-  let myLocation = null;
   if (errorLocationMsg) {
     alert(errorLocationMsg);
-  } else if (geoLocation) {
-    myLocation = {
-      latitude: geoLocation.latitude,
-      longitude: geoLocation.longitude,
-      latitudeDelta: 0.009,
-      longitudeDelta: 0.009,
-    };
   }
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
