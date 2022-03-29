@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useState, useEffect } from "react";
 import MapView, { PROVIDER_GOOGLE, Marker } from "react-native-maps";
 import {
   Button,
@@ -12,6 +13,7 @@ import {
 } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import * as Location from "expo-location";
 
 function Tree(props) {
   return (
@@ -68,6 +70,36 @@ const location = {
 };
 
 function HomeScreen({ navigation }) {
+  const [geoLocation, setGeoLocation] = useState(null);
+  const [errorLocationMsg, setErrorLocationMsg] = useState(null);
+
+  function convertToMapLocation(geoLoc) {
+    if (geoLoc) {
+      return {
+        latitude: geoLoc.coords.latitude,
+        longitude: geoLoc.coords.longitude,
+        latitudeDelta: 0.009,
+        longitudeDelta: 0.009,
+      };
+    }
+  }
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        setErrorLocationMsg("Permission to access location was denied");
+        return;
+      }
+
+      let newLocation = await Location.getCurrentPositionAsync({});
+      setGeoLocation(convertToMapLocation(newLocation));
+    })();
+  }, []);
+
+  if (errorLocationMsg) {
+    alert(errorLocationMsg);
+  }
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       <Text>Welcome to Urban Grove!</Text>
@@ -78,8 +110,8 @@ function HomeScreen({ navigation }) {
       <MapView
         style={{ width: "100%", height: "50%" }}
         provider={PROVIDER_GOOGLE}
-        region={location}
         mapType={"hybrid"}
+        region={geoLocation}
       >
         <AllTrees></AllTrees>
       </MapView>
