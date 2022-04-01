@@ -45,6 +45,7 @@ function Tree(props) {
 const TREES = [
   { id: "1", latitude: 23.59933, longitude: 77.412613, type: "apple tree" },
   { id: "2", latitude: 23.59, longitude: 77.412, type: "pear tree" },
+  { id: "3", latitude: 29.9310701, longitude: -90.0764898, type: "loquat tree" },
 ];
 
 function getTrees() {
