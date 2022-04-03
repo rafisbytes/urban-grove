@@ -63,13 +63,6 @@ function AllTrees() {
   ));
 }
 
-const location = {
-  latitude: 23.59933,
-  longitude: 77.412613,
-  latitudeDelta: 0.009,
-  longitudeDelta: 0.009,
-};
-
 function HomeScreen({ navigation }) {
   const [geoLocation, setGeoLocation] = useState(null);
   const [errorLocationMsg, setErrorLocationMsg] = useState(null);
@@ -244,6 +237,39 @@ function PinPointScreen({ route, navigation }) {
   const [position, setPosition] = React.useState({ longitude: 0, latitude: 0 });
   const { tree, treeDisscribtion, treeLocation, treeInfo } = route.params;
 
+  // Geolocation stuff
+
+  const [geoLocation, setGeoLocation] = useState(null);
+  const [errorLocationMsg, setErrorLocationMsg] = useState(null);
+
+  function convertToMapLocation(geoLoc) {
+    if (geoLoc) {
+      return {
+        latitude: geoLoc.coords.latitude,
+        longitude: geoLoc.coords.longitude,
+        latitudeDelta: 0.009,
+        longitudeDelta: 0.009,
+      };
+    }
+  }
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        setErrorLocationMsg("Permission to access location was denied");
+        return;
+      }
+
+      let newLocation = await Location.getCurrentPositionAsync({});
+      setGeoLocation(convertToMapLocation(newLocation));
+    })();
+  }, []);
+
+  if (errorLocationMsg) {
+    alert(errorLocationMsg);
+  }
+
   function addTree(tree, treeDisscribtion, treeLocation, treeInfo, position) {
     return;
   }
@@ -256,7 +282,7 @@ function PinPointScreen({ route, navigation }) {
       <MapView
         style={{ width: "100%", height: "89%", borderRadius: 10, margin: 5 }}
         provider={PROVIDER_GOOGLE}
-        initialRegion={location}
+        initialRegion={geoLocation}
         mapType={"hybrid"}
         onPress={(e) => setPosition([e.nativeEvent.coordinate][0])}
       >
