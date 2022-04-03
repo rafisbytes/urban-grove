@@ -285,6 +285,51 @@ function PinPointScreen({ route, navigation }) {
   );
 }
 
+function DetailScreen() {
+  function getTreeInfo() {
+    return {
+      tree: "loquat tree",
+      treeDisscribtion: "It has very tasty loquats.",
+      treeLocation: "It's on the corner where it says 2048",
+      treeInfo: "A ladder is required to reach the loquats.",
+      seasons: ["spring", "summer"],
+      taste: ["sweet"],
+    };
+  }
+  let treeInfo = getTreeInfo();
+  return (
+    <View>
+      <Text style={{ fontSize: 50, padding: 5 }}>{treeInfo.tree} </Text>
+      <Text> </Text>
+      <Text style={{ fontSize: 20, fontWeight: "bold", padding: 5 }}>
+        Tree Describition:
+      </Text>
+      <Text style={{ padding: 5 }}>{treeInfo.treeDisscribtion}</Text>
+      <Text style={{ fontSize: 20, fontWeight: "bold", padding: 5 }}>
+        Tree Location:
+      </Text>
+      <Text style={{ padding: 5 }}>{treeInfo.treeLocation}</Text>
+      <Text style={{ fontSize: 20, fontWeight: "bold", padding: 5 }}>
+        Tree Information:
+      </Text>
+      <Text style={{ padding: 5 }}>{treeInfo.treeInfo}</Text>
+      <Text style={{ fontSize: 20, fontWeight: "bold", padding: 5 }}>
+        The tree produces fruit in the{" "}
+        {treeInfo.seasons.slice(0, -1).join(", ") &&
+          treeInfo.seasons.slice(0, -1).join(", ") + " and "}
+        {treeInfo.seasons[treeInfo.seasons.length - 1]}.
+      </Text>
+      <Text></Text>
+      <Text style={{ fontSize: 20, fontWeight: "bold", padding: 5 }}>
+        The fruit is{" "}
+        {treeInfo.taste.slice(0, -1).join(", ") &&
+          treeInfo.taste.slice(0, -1).join(", ") + " and "}
+        {treeInfo.taste[treeInfo.taste.length - 1]}.
+      </Text>
+    </View>
+  );
+}
+
 const Stack = createNativeStackNavigator();
 
 function App() {
@@ -294,6 +339,7 @@ function App() {
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Add Your Tree" component={AddScreen} />
         <Stack.Screen name="Pinpoint Your Tree" component={PinPointScreen} />
+        <Stack.Screen name="More Info" component={DetailScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
