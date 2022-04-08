@@ -18,7 +18,10 @@ import * as Location from "expo-location";
 function Tree(props) {
   return (
     <View>
-      <Marker {...props}>
+      <Marker
+        {...props}
+        onPress={() => props.text && props.navigate(props.treeKey)}
+      >
         <View
           style={{
             backgroundColor: "#DDD",
@@ -32,6 +35,7 @@ function Tree(props) {
           }}
         >
           <Text style={{ alignSelf: "center" }}>{props.tree}</Text>
+          <Text style={{color: "#0363ff"}}>Click to see more</Text>
         </View>
         <Image
           source={require("./tree.png")}
@@ -51,13 +55,16 @@ function getTrees() {
   return TREES;
 }
 
-function AllTrees() {
+function AllTrees(props) {
   return getTrees().map((tree) => (
     <Tree
       coordinate={{ latitude: tree.latitude, longitude: tree.longitude }}
       tree={tree.type}
       key={tree.id}
+      treeKey={tree.id}
       text={true}
+      do={props.do}
+      navigate={props.navigate}
     ></Tree>
   ));
 }
@@ -113,7 +120,11 @@ function HomeScreen({ navigation }) {
         mapType={"hybrid"}
         region={geoLocation}
       >
-        <AllTrees></AllTrees>
+        <AllTrees
+          navigate={(treeKey) =>
+            navigation.navigate("More Info", { treeKey: treeKey })
+          }
+        ></AllTrees>
       </MapView>
     </View>
   );
@@ -285,8 +296,8 @@ function PinPointScreen({ route, navigation }) {
   );
 }
 
-function DetailScreen() {
-  function getTreeInfo() {
+function DetailScreen({ route }) {
+  function getTreeInfo(treeKey) {
     return {
       tree: "loquat tree",
       treeDisscribtion: "It has very tasty loquats.",
@@ -296,7 +307,8 @@ function DetailScreen() {
       taste: ["sweet"],
     };
   }
-  let treeInfo = getTreeInfo();
+  const { treeKey } = route.params;
+  let treeInfo = getTreeInfo(treeKey);
   return (
     <View>
       <Text style={{ fontSize: 50, padding: 5 }}>{treeInfo.tree} </Text>
